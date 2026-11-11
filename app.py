@@ -14,6 +14,7 @@ def add_book(books: list) -> None:
     """讀取書籍資料並新增至 books；無回傳值。"""
     while True:
         book_id = input_text('請輸入書籍編號：')
+        # 書籍編號不可重複；重複時只重新輸入編號。
         duplicate = False
         for book in books:
             if book['id'] == book_id:
@@ -26,6 +27,7 @@ def add_book(books: list) -> None:
 
     title = input_text('請輸入書名：')
     author = input_text('請輸入作者：')
+    # 無法轉成整數時，提示使用者重新輸入價格。
     while True:
         try:
             price = int(input('請輸入價格：').strip())
@@ -35,6 +37,7 @@ def add_book(books: list) -> None:
             pass
         print('價格須為大於 0 的整數，請重新輸入。')
 
+    # 資料確認無誤後才新增，預設為可借閱。
     books.append({
         'id': book_id,
         'title': title,
@@ -50,6 +53,7 @@ def change_status(books: list) -> None:
     book_id = input('請輸入書籍編號：').strip()
     for book in books:
         if book['id'] == book_id:
+            # not 可在 True 與 False 之間切換。
             book['borrowed'] = not book['borrowed']
             status = '已借出' if book['borrowed'] else '可借閱'
             print(f'「{book["title"]}」的狀態已變更為：{status}')
@@ -64,6 +68,7 @@ def show_statistics(books: list) -> None:
         return
 
     print('\n--- 最後 3 筆書籍 ---')
+    # 取出最後 3 筆；不足 3 筆時會取出全部資料。
     show_books(books[-3:])
     borrowed_count = 0
     total_price = 0
@@ -83,6 +88,7 @@ def show_statistics(books: list) -> None:
 
 def main() -> None:
     """讀取書籍資料並顯示主選單；無參數及回傳值。"""
+    # 讀取書籍資料；若無法讀取，就結束程式。
     try:
         books = read_books('books.json')
     except FileNotFoundError:
@@ -125,6 +131,7 @@ def main() -> None:
         elif choice == '5':
             show_statistics(books)
         elif choice == '6':
+            # 寫入成功後才顯示匯出的筆數。
             try:
                 write_books(books, 'output.json')
             except OSError:
